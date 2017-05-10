@@ -16,7 +16,7 @@ import android.widget.Toast;
 public class PollService extends Service{
 
 	private static final String TAG = "MyService";
-	private static final String IP = "http://192.168.1.10:8080";
+	private static final String IP = "http://172.16.56.10:8080";
 	private static final String NOTIFICATION = "/api/v1/isnotificationqueued";
 	private static final String ACKNOWLEDGE = "/api/v1/igotthenotificationqueue";
 

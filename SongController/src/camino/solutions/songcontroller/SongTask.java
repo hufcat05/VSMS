@@ -14,7 +14,7 @@ public class SongTask extends TimerTask {
 		try {
 			
 			String audioFile= Environment.getExternalStorageDirectory().getAbsolutePath();
-			audioFile+="/bluetooth/Sins.mp3";
+			audioFile+="/bluetooth/Sun.m4a";
 			mediaPlayer = new MediaPlayer();
 			mediaPlayer.setDataSource(audioFile);
 			mediaPlayer.prepare();

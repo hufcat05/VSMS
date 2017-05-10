@@ -60,7 +60,7 @@ public class PollTask extends TimerTask {
 					if (!processInitiated){
 						SntpClient client = new SntpClient();
 						for (int x = 0; x < 10; x++){
-							if (client.requestTime("192.168.1.10", 1000)) {
+							if (client.requestTime("172.16.56.10", 1000)) {
 							    long now = client.getNtpTime() + SystemClock.elapsedRealtime() - client.getNtpTimeReference();
 							    SystemClock.setCurrentTimeMillis(now);
 							    Date current = new Date(now);

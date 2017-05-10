@@ -1,40 +1,67 @@
 package camino.solutions.service;
 
-import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.TimerTask;
 
-import javax.sound.sampled.Clip;
-
-import javazoom.jl.player.Player;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPortOut;
 
 public class SongTask extends TimerTask{
-	Player player;
+	private static final String URL = "http://localhost:53000/cue/selected";
 	
+	public InetAddress targetIP;
+	 public OSCPortOut sender = null;
 	
 	public SongTask(){
-		loadSong();
+		setConnection();
 	}
 
 	@Override
 	public void run() {
 		try {
-			player.play();
+			executeOsc();
 		} catch (Exception ex){
 			ex.printStackTrace();
 		}
 	}
+	public void setConnection(){
+        try {
+            targetIP = InetAddress.getLocalHost();
+            //targetIP = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {          
+            e.printStackTrace();        }        
+
+        try {
+            sender = new OSCPortOut(targetIP, 53535); //------set up outgoing ------
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        /*try {                                     //------set up incoming-------
+            receiver = new OSCPortIn(4444);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } */ 
+
+    }
 	
-	public void stopStong(){
-		player.close();
-	}
-	
-	public void loadSong(){
-		try {
-			 FileInputStream fis = new FileInputStream("C:\\Users\\hufcat05\\Documents\\sins.mp3");
-			    player = new Player(fis);
-			} catch (Exception ex){
-				ex.printStackTrace();
-			}
+	public void executeOsc(){
+		OSCMessage msg = new OSCMessage("/cue/selected/start");
+		OSCMessage msg2 = new OSCMessage("/select/next");
+        try {
+            sender.send(msg);
+            sender.send(msg2);
+            System.out.println("OSC message sent!");
+        } catch (Exception e) {
+            System.out.println("can not send");
+            //e.printStackTrace();
+        }
 	}
 
 }

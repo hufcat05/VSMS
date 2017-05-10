@@ -67,4 +67,9 @@ public class PhoneController {
     public boolean songReceived(){
     	return phoneService.isSongReceived();
     }
+    
+    @RequestMapping("/api/v1/executeosc/{osc}")
+    public void executeOsc(@PathVariable(value="osc") String osc){
+    	phoneService.executeOsc(osc);
+    }
 }

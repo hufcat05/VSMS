@@ -23,6 +23,7 @@ public class PollTask extends TimerTask {
 	private String ip;
 	private String notification;
 	private String acknowledge;
+	private boolean dinging = false;
 	Context context;
 	
 	public PollTask(String ip, String notification, String acknowledge, Context context){
@@ -34,35 +35,40 @@ public class PollTask extends TimerTask {
 
 	@Override
 	public void run() {
-		Log.d("hi", "in run");
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpContext localContext = new BasicHttpContext();
-		HttpGet httpGet = new HttpGet(ip + notification);
-		String text = null;
-		try {
-			HttpResponse response = httpClient.execute(httpGet, localContext);
-
-
-			HttpEntity entity = response.getEntity();
-
-
-			text = getASCIIContentFromEntity(entity);
-			
-			Log.d("yolo", text);
-			
-			if (text.equals("true")){
-				try {
-				    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-				    Ringtone r = RingtoneManager.getRingtone(context, notification);
-				    r.play();
-				    sendAcknowledge();
-				} catch (Exception e) {
-				    e.printStackTrace();
+		if (!dinging){
+			Log.d("hi", "in run");
+			HttpClient httpClient = new DefaultHttpClient();
+			HttpContext localContext = new BasicHttpContext();
+			HttpGet httpGet = new HttpGet(ip + notification);
+			String text = null;
+			try {
+				HttpResponse response = httpClient.execute(httpGet, localContext);
+	
+	
+				HttpEntity entity = response.getEntity();
+	
+	
+				text = getASCIIContentFromEntity(entity);
+				
+				Log.d("yolo", text);
+				
+				if (text.equals("true")){
+					dinging = true;
+					try {
+					    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+					    Ringtone r = RingtoneManager.getRingtone(context, notification);
+					    r.play();
+					    while (dinging){
+					    	sendAcknowledge();
+					    }
+					} catch (Exception e) {
+					    e.printStackTrace();
+					}
 				}
+	
+			} catch (Exception e) {
+				Log.e("oops", e.getLocalizedMessage());
 			}
-
-		} catch (Exception e) {
-			Log.e("oops", e.getLocalizedMessage());
 		}
 }
 	
@@ -80,7 +86,9 @@ public class PollTask extends TimerTask {
 
 			text = getASCIIContentFromEntity(entity);
 			
-			
+			if (text.equals("true")){
+				dinging = false;
+			}
 			
 			Log.d("response", text);
 		} catch (Exception ex){

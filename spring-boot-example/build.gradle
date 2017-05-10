@@ -2,6 +2,7 @@ buildscript {
     repositories {
         maven { url "http://repo.spring.io/libs-snapshot" }
         maven { url "https://mvnrepository.com/artifact/com.googlecode.soundlibs/jlayer" }
+        maven { url "search.maven.org" }
         mavenLocal()
     }
     dependencies {
@@ -34,6 +35,9 @@ dependencies {
     // tag::actuator[]
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("com.googlecode.soundlibs:jlayer:1.0.1-1")
+    compile("com.illposed.osc:javaosc-core:0.4")
+    compile("com.illposed.osc:javaosc-ui:0.4")
+    compile("com.illposed.osc:javaosc-parent:0.4")
     // end::actuator[]
     testCompile("junit:junit")
 }
