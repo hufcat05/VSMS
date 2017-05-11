@@ -95,7 +95,7 @@ public class PhoneService {
     }
 	
 	public void executeOsc(String osc){
-		OSCMessage msg = new OSCMessage("/cue/selected/start");
+		OSCMessage msg = new OSCMessage("/cue/SONG/start");
 
         try {
             sender.send(msg);

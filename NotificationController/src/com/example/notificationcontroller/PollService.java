@@ -21,6 +21,7 @@ public class PollService extends Service{
 	private static final String ACKNOWLEDGE = "/api/v1/igotthenotificationqueue";
 
 	private PollTask pollTask;
+	private Timer timer;
 	
 	public PollService(){
 		
@@ -41,10 +42,10 @@ public class PollService extends Service{
 	public void onStart(Intent intent, int startId) {
 		Log.d("yolo", "Started");
 		
-		TimerTask timerTask = new PollTask(IP, NOTIFICATION, ACKNOWLEDGE, this);
+		pollTask = new PollTask(IP, NOTIFICATION, ACKNOWLEDGE, this);
         //running timer task as daemon thread
-        Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(timerTask, 0, 1000);
+        timer = new Timer(true);
+        timer.scheduleAtFixedRate(pollTask, 0, 1000);
 
 		Log.d(TAG, "onStart");
 	//Note: You can start a new thread and use it for long background processing from here.
@@ -55,7 +56,7 @@ public class PollService extends Service{
 	@Override
 	public void onDestroy() {
 		Toast.makeText(this, "PollService Stopped", Toast.LENGTH_LONG).show();
-		
+		timer.cancel();
 		Log.d(TAG, "onDestroy");
 	}
 

@@ -52,11 +52,9 @@ public class SongTask extends TimerTask{
     }
 	
 	public void executeOsc(){
-		OSCMessage msg = new OSCMessage("/cue/selected/start");
-		OSCMessage msg2 = new OSCMessage("/select/next");
+		OSCMessage msg = new OSCMessage("/cue/SONG/start");
         try {
             sender.send(msg);
-            sender.send(msg2);
             System.out.println("OSC message sent!");
         } catch (Exception e) {
             System.out.println("can not send");

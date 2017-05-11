@@ -29,6 +29,7 @@ public class NotifcationActivity extends Activity {
 	private WakeLock screenWakeLock;
 	DevicePolicyManager mDPM;
 	ComponentName mAdminName;
+	private boolean started = false;
 	
 	private final int REQUEST_ENABLE = 1;
 	/**
@@ -101,6 +102,7 @@ public class NotifcationActivity extends Activity {
 	
 	public void setUpButton(){
 		Button startButton = (Button) findViewById(R.id.button1);
+		Button stopButton = (Button) findViewById(R.id.button2);
 		
 		startButton.setOnClickListener(new View.OnClickListener() {
 
@@ -110,12 +112,31 @@ public class NotifcationActivity extends Activity {
 	           lockScreen();
 	        }
 	    });
+		
+		stopButton.setOnClickListener(new View.OnClickListener() {
+
+	        @Override
+	        public void onClick(View v) {
+	           stopProcess();
+	           lockScreen();
+	        }
+	    });
 	}
 	
 	public void startProcess(){
+		if (started){
+			stopService(new Intent(this, PollService.class));
+		}
 		startService(new Intent(this, PollService.class));
-		
+		started = true;
 		Log.d("yolo", "starting process");
+	}
+	
+	public void stopProcess(){
+		if (started){
+			stopService(new Intent(this, PollService.class));
+			started = false;
+		}
 	}
 	
 	/*

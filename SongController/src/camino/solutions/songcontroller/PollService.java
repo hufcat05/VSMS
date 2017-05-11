@@ -23,6 +23,7 @@ public class PollService extends Service{
 	private static final String INSURANCE = "/api/v1/didyougetit";
 	private SongTask songTask;
 	private PollTask pollTask;
+	private Timer timer;
 	
 	public PollService(){
 		songTask = new SongTask();
@@ -38,30 +39,16 @@ public class PollService extends Service{
 		Toast.makeText(this, "Congrats! PollService Created", Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onCreate");
 		
-		LayoutInflater li = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		final View view = li.inflate(R.layout.activity_wake_acivity, null); 
-		Button stopButton = (Button) view.findViewById(R.id.button2);
-		
-		stopButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				songTask.stopSong();
-				songTask = new SongTask();
-				pollTask = new PollTask(IP, SONGSTART, LAUNCH, ACKNOWLEDGE, songTask);
-			}
-		});
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
 		Log.d("yolo", "Started");
 		
-		TimerTask timerTask = new PollTask(IP, SONGSTART, LAUNCH, ACKNOWLEDGE, songTask);
+		pollTask = new PollTask(IP, SONGSTART, LAUNCH, ACKNOWLEDGE, songTask);
         //running timer task as daemon thread
-        Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(timerTask, 0, 1000);
-		timerTask = new PollTask(IP, SONGSTART, LAUNCH, ACKNOWLEDGE, new SongTask());
+        timer = new Timer(true);
+        timer.scheduleAtFixedRate(pollTask, 0, 1000);
 
 		Log.d(TAG, "onStart");
 	//Note: You can start a new thread and use it for long background processing from here.
@@ -72,7 +59,8 @@ public class PollService extends Service{
 	@Override
 	public void onDestroy() {
 		Toast.makeText(this, "PollService Stopped", Toast.LENGTH_LONG).show();
-		
+		songTask.stopSong();
+		timer.cancel();
 		Log.d(TAG, "onDestroy");
 	}
 
